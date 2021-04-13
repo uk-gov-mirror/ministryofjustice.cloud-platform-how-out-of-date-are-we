@@ -12,15 +12,14 @@
 
         <div class="card-body">
           <ul>
-            <li>chart: <%= app["chart"] %></li>
+            <li>chart: <%= app["release"] %></li>
             <li>namespace: <%= app["namespace"] %></li>
-            <li>installed: <%= app["installed_version"] %></li>
-            <li>latest: <%= app["latest_version"] %></li>
+            <li>installed: <%= app["Installed"].fetch("version") %></li>
+            <li>latest: <%= app["Latest"].fetch("version") %></li>
           </ul>
         </div>
 
       </div>
-
     <% end %>
 
   </div>

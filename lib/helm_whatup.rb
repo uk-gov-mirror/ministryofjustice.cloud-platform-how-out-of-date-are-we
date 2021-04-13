@@ -31,8 +31,8 @@ class HelmWhatup < ItemList
   # how far behind latest the installed version
   # is.
   def version_lag_traffic_light(app)
-    installed = app.fetch("installed_version").split(".")
-    latest = app.fetch("latest_version").split(".")
+    installed = app.dig("Installed").fetch("version").split(".")
+    latest = app.dig("Latest").fetch("version").split(".")
 
     major_diff = latest[0].to_i - installed[0].to_i
     minor_diff = latest[1].to_i - installed[1].to_i

@@ -26,20 +26,10 @@ def data
 end
 
 def get_all_helm_releases
-  namespaces_with_helm_releases.inject([]) do |list, namespace|
-    list += helm_releases_in_namespace(namespace)
-  end
-end
-
-def namespaces_with_helm_releases
-  json = execute("helm list --all-namespaces -o json")
-  data = JSON.parse(json)
-  data.map { |h| h["namespace"] }.uniq.sort
-end
-
-def helm_releases_in_namespace(namespace)
-  hash = JSON.parse(execute("helm whatup -n #{namespace} -o json", true))
-  hash.fetch("releases", [])
+  execute "nova find --config=nova.yaml"
+  file = File.read('nova.json')
+  hash = JSON.parse(file)
+  hash.fetch("helm", [])
 rescue JSON::ParserError
   []
 end

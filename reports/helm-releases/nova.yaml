@@ -1,0 +1,27 @@
+context: ""
+desired-versions: {}
+helm-version: "3"
+output-file: "nova.json"
+poll-helm-hub: false
+url:
+- https://charts.fairwinds.com/stable
+- https://charts.fairwinds.com/incubator
+- https://kubernetes-charts.storage.googleapis.com
+- https://kubernetes-charts-incubator.storage.googleapis.com
+- https://charts.jetstack.io
+- https://concourse-charts.storage.googleapis.com
+- https://ministryofjustice.github.io/cloud-platform-helm-charts
+- https://kubernetes.github.io/ingress-nginx
+- https://prometheus-community.github.io/helm-charts
+- https://kubernetes.github.io/autoscaler
+- https://vmware-tanzu.github.io/helm-charts
+- https://kubernetes-charts.banzaicloud.com
+- https://uswitch.github.io/kiam-helm-charts/charts
+- https://charts.bitnami.com/bitnami
+- https://kubernetes.github.io/kube-state-metrics
+- https://grafana.github.io/helm-charts
+- https://aws.github.io/eks-charts
+- https://helm.releases.hashicorp.com
+- https://charts.helm.sh/stable
+- https://oteemo.github.io/charts
+wide: false
