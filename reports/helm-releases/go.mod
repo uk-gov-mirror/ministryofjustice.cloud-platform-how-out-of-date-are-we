@@ -1,6 +1,6 @@
 module github.com/ministryofjustice/cloud-platform-how-out-of-date-are-we/reports/helm-releases
 
-go 1.23.5
+go 1.24.4
 
 require (
 	github.com/ministryofjustice/cloud-platform-cli v0.0.0-20240212163229-ff3c7d52c035

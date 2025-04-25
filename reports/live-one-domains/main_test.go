@@ -74,7 +74,7 @@ func Test_live1DomainSearch(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := live1DomainSearch(tt.args.domainSearch)
+			got := liveOneDomainSearch(tt.args.domainSearch)
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("live1DomainSearch() = %v, want %v", got, tt.want)

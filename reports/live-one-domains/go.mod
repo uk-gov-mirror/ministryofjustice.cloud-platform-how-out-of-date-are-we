@@ -1,8 +1,6 @@
 module github.com/ministryofjustice/cloud-platform-how-out-of-date-are-we/reports/live-one-domains
 
-go 1.23.5
-
-toolchain go1.23.6
+go 1.24.4
 
 require (
 	github.com/ministryofjustice/cloud-platform-environments v1.2.0

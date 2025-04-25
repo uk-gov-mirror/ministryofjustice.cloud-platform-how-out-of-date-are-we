@@ -1,6 +1,6 @@
 module github.com/ministryofjustice/cloud-platform-how-out-of-date-are-we
 
-go 1.23.5
+go 1.24.4
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.29.0

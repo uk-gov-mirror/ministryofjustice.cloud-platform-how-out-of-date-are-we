@@ -1,6 +1,6 @@
 module github.com/ministryofjustice/cloud-platform-how-out-of-date-are-we/reports/hostedservices
 
-go 1.23.5
+go 1.24.4
 
 require (
 	github.com/ministryofjustice/cloud-platform-environments v1.2.0

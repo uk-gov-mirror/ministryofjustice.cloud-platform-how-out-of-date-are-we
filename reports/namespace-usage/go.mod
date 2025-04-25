@@ -1,6 +1,6 @@
 module github.com/ministryofjustice/cloud-platform-how-out-of-date-are-we/reports/namespace-usage
 
-go 1.23.5
+go 1.24.4
 
 require (
 	github.com/ministryofjustice/cloud-platform-environments v1.2.1-0.20250129120702-992338de7c42

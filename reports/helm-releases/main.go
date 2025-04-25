@@ -176,7 +176,7 @@ func helmReleasesInNamespace(namespace string) ([]helmRelease, error) {
 		return nil, err
 	}
 
-	fmt.Println("Executing helm whatup in namespace %s", namespace, "and got the following releases: ", rel["releases"])
+	fmt.Printf("Executing helm whatup in namespace %s and got the following releases: %v\n", namespace, rel["releases"])
 
 	return rel["releases"], nil
 }

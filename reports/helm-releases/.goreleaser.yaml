@@ -1,15 +1,16 @@
 version: 2
-project_name: cloud-platform-helm-release-checker
+project_name: cloud-platform-helm-releases
 env:
   - CGO_ENABLED=0
-  - DOCKERFILE=reports/Dockerfile_helmreleases
+  - DOCKERFILE=reports/Dockerfile
+  - HELM_VERSION=3.12.0
 before:
   hooks:
     - go mod download
 builds:
   - dir: reports/helm-releases
     main: main.go
-    binary: cloud-platform-helm-release-checker
+    binary: cloud-platform-helm-releases
     goos:
       - linux
       - darwin
@@ -32,6 +33,7 @@ dockers:
   use: buildx
   build_flag_templates:
   - --build-arg=COMMAND={{ .ProjectName }}
+  - --build-arg=HELM_VERSION={{ .Env.HELM_VERSION }}
   - --platform=linux/amd64
   - --label=org.opencontainers.image.title={{ .ProjectName }}
   - --label=org.opencontainers.image.description={{ .ProjectName }}

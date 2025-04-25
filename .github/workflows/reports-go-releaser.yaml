@@ -5,7 +5,7 @@ on:
     types: [created]
 
 env:
-  GO_VERSION: 1.23
+  GO_VERSION: 1.24
   FETCH_DEPTH: 0
 
 jobs:
@@ -27,7 +27,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
-      
+
       - name: Run GoReleaser for helm-releases
         uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
         if: success() && startsWith(github.ref, 'refs/tags/')
