@@ -13,6 +13,7 @@ import (
 type NamespaceError struct {
 	Namespace string `json:"namespace"`
 	Error     string `json:"error"`
+	BuildID	  int `json:"build_id"`
 }
 
 type ErroringNamespaces struct {
@@ -23,7 +24,7 @@ type ErroringNamespaces struct {
 func ErroredNamespacesPage(w http.ResponseWriter, bucket string, wantJson bool, client *s3.Client) {
 	t := template.Must(template.ParseFiles("lib/templates/erroring_namespaces.html"))
 
-	byteValue, filestamp, err := utils.ImportS3File(client, bucket, "apply-live/collated-errored-namespaces.json")
+	byteValue, filestamp, err := utils.ImportS3File(client, bucket, "apply-live/gathered-namespaces-errors.json")
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, "Failed to load data from S3", http.StatusInternalServerError)
