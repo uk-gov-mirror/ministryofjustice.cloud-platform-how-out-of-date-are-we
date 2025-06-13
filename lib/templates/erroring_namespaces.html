@@ -109,6 +109,9 @@
           <th>
             <button type="button" class="btn btn-outline-primary info" onclick="sortTable(1, false)">Error message</button>
           </th>
+          <th>
+            <button type="button" class="btn btn-outline-primary info" onclick="sortTable(2, false)">Build ID</button>
+          </th>
         </tr>
       </thead>
       <tbody id="namespaceTable">
@@ -118,6 +121,7 @@
             <a href="/namespace/{{.Namespace}}">{{.Namespace}}</a>
           </td>
           <td><code>{{.Error}}</code></td>
+          <td><code>{{.BuildID}}</code></td>
         </tr>
         {{- end }}
       </tbody>
