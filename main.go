@@ -9,6 +9,12 @@ import (
 	utils "github.com/ministryofjustice/cloud-platform-how-out-of-date-are-we/utils"
 )
 
+type Details struct {
+	ChannelName     string
+	SlackWebhookURL string
+	Severity        string
+}
+
 var (
 	bucket        = "cloud-platform-hoodaw-reports"
 	errorNsBucket = "cloud-platform-concourse-environments-live-reports"
@@ -70,6 +76,14 @@ func main() {
 		accept := r.Header.Get("Accept")
 		wantJson := accept == "application/json"
 		lib.LiveOneDomainsPage(w, bucket, wantJson, client)
+	})
+
+	http.HandleFunc("Get /live_one_domains/{domain}", func(w http.ResponseWriter, r *http.Request) {
+		var details Details
+		details.ChannelName = r.FormValue("ChannelName")
+		details.SlackWebhookURL = r.FormValue("SlackWebhookURL")
+		details.Severity = r.FormValue("Severity")
+		lib.UpdateAlertManager(w, r, details, bucket, client)
 	})
 
 	fmt.Println("Listening on port :8080 ...")
