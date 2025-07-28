@@ -1,0 +1,54 @@
+body{
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+}
+
+form{
+    margin-top: 50px;
+}
+
+fieldset {
+  border: 1px solid rgb(33,37,41);
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+legend {
+  font-weight: bold;
+  color: rgb(33,37,41);
+  padding: 0 10px;
+}
+
+h2{
+    font-size: xx-large;;
+    font-weight: bold;
+}
+
+label{
+    font-weight: bold;
+    font-size: large;
+}
+
+input, textarea{
+    background: rgba(255,255,255,.5);
+    border: none;
+}
+
+textarea{
+    resize: none;
+}
+
+.govuk-header {
+    background-color: rgb(33,37,41);
+    color: white ;
+    padding: 5px 10px;
+  }
+
+.govuk-header__logo svg {
+  fill: white;
+}
+
+h1 {
+  font-size: 1.25em;
+}

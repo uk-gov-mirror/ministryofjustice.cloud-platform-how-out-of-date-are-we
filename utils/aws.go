@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -132,4 +134,26 @@ func ImportS3File(client *s3.Client, bucketName, objectKey string) ([]byte, stri
 	fileTimeStamp := output.LastModified.String()
 
 	return buf.Bytes(), fileTimeStamp, nil
+}
+
+func GetS3FileContent(bucket, s3Key string, client *s3.Client) ([]byte, error) {
+	file, _, err := ImportS3File(client, bucket, s3Key)
+	if err != nil {
+		return nil, fmt.Errorf("failed to import S3 file: %w", err)
+	}
+	return file, nil
+}
+
+func UpdateS3FileDetails(bucket, s3Key string, lines []string, client *s3.Client) error {
+	putInput := &s3.PutObjectInput{
+		Bucket: &bucket,
+		Key:    aws.String(s3Key),
+		Body:   bytes.NewReader([]byte(strings.Join(lines, "\n"))),
+	}
+	_, err := client.PutObject(context.Background(), putInput)
+	if err != nil {
+		return fmt.Errorf("failed to put object to S3: %w", err)
+	}
+
+	return nil
 }

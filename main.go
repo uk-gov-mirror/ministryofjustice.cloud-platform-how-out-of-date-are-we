@@ -2,18 +2,13 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 
 	lib "github.com/ministryofjustice/cloud-platform-how-out-of-date-are-we/lib"
 	utils "github.com/ministryofjustice/cloud-platform-how-out-of-date-are-we/utils"
 )
-
-type Details struct {
-	ChannelName     string
-	SlackWebhookURL string
-	Severity        string
-}
 
 var (
 	bucket        = "cloud-platform-hoodaw-reports"
@@ -78,12 +73,19 @@ func main() {
 		lib.LiveOneDomainsPage(w, bucket, wantJson, client)
 	})
 
-	http.HandleFunc("Get /live_one_domains/{domain}", func(w http.ResponseWriter, r *http.Request) {
-		var details Details
-		details.ChannelName = r.FormValue("ChannelName")
-		details.SlackWebhookURL = r.FormValue("SlackWebhookURL")
-		details.Severity = r.FormValue("Severity")
-		lib.UpdateAlertManager(w, r, details, bucket, client)
+	http.HandleFunc("/alert_manager", func(w http.ResponseWriter, r *http.Request) {
+		t := template.Must(template.ParseFiles("lib/templates/update_alert_manager.html"))
+		if r.Method != http.MethodPost {
+			t.Execute(w, nil)
+			return
+		}
+
+		newAlert, err := utils.CollectAlertManagerUpdates(r, w)
+		if err != nil {
+			return
+		}
+
+		lib.UpdateAlertManager(w, r, bucket, client, newAlert, t)
 	})
 
 	fmt.Println("Listening on port :8080 ...")

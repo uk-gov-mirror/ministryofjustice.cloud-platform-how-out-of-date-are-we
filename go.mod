@@ -10,6 +10,10 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.53.0
 	github.com/aws/aws-sdk-go-v2/service/sts v1.28.5
 	github.com/aws/smithy-go v1.20.2
+	github.com/google/go-github/v72 v72.0.0
+	github.com/jferrl/go-githubauth v1.2.0
+	github.com/slack-go/slack v0.17.3
+	golang.org/x/oauth2 v0.30.0
 
 )
 
@@ -27,6 +31,10 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.20.3 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.23.3 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
+	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
+	github.com/google/go-github/v69 v69.0.0 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 )

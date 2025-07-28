@@ -1,67 +1,95 @@
-// TODO:
-// 1. build frontend application to read data
-// 2. build backend application to update file in s3 bucket with new data
-// 3. once file in the s3 bucket is updated create a Issue with the details of the update.
-// 4. once Issue is created, update the frontend with the confirmation of the update and the Issue details.
-
 package lib
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/ministryofjustice/cloud-platform-how-out-of-date-are-we/utils"
 )
 
-type Details struct {
-	ChannelName     string `json:"channel_name"`
-	SlackWebhookURL string `json:"slack_webhook_url"`
-	Severity        string `json:"severity"`
+var (
+	s3Key = "alert_manager_receivers.json"
+	// pKey      = os.Getenv("GITHUB_APP_KEY")
+	// appid     = os.Getenv("GITHUB_APP_ID")
+	// installid = os.Getenv("GITHUB_INSTALLATION_ID")
+	// org       = "ministryofjustice"
+	// repo      = "cloud-platform"
+)
+
+type AlertManagerUpdateResponseMulti []struct {
+	Success  int
+	Severity string
 }
 
-func UpdateAlertManager(w http.ResponseWriter, r *http.Request, details interface{}, bucket string, client *s3.Client) {
-	detailsMap, ok := details.(Details)
-	if !ok {
-		http.Error(w, "Invalid details format", http.StatusBadRequest)
+func UpdateAlertManager(w http.ResponseWriter, r *http.Request, s3bucket string, s3client *s3.Client, newAlert utils.AlertManagerUpdate, t *template.Template) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.Header.Get("Content-Type") != "application/x-www-form-urlencoded" {
+		http.Error(w, "Unsupported content type", http.StatusUnsupportedMediaType)
 		return
 	}
 
-	fmt.Fprintf(w, "Updating Alert Manager with details: %+v\n", detailsMap)
-
-	err := updateS3FileWithDetails(bucket, detailsMap, client)
+	file, err := utils.GetS3FileContent(s3bucket, s3Key, s3client)
 	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to get S3 file content: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	s3Map, err := utils.ParseAlertManagerReceiversFile(file)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to parse alert manager receivers file: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	updatedReceivers, compareResult := utils.Compare(s3Map, newAlert)
+	for _, res := range compareResult {
+		if res < 0 || res > 2 {
+			http.Error(w, "Invalid comparison result", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	lines, err := utils.UpdateAlertDetails(updatedReceivers)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to update alert details: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	if err := utils.UpdateS3FileDetails(s3bucket, s3Key, lines, s3client); err != nil {
 		http.Error(w, fmt.Sprintf("Failed to update S3 file: %v", err), http.StatusInternalServerError)
 		return
 	}
 
-	id, err := createIssueWithUpdateDetails(fmt.Sprintf("Channel: %s, Webhook: %s, Severity: %s",
-		detailsMap.ChannelName, detailsMap.SlackWebhookURL, detailsMap.Severity))
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Failed to create issue: %v", err), http.StatusInternalServerError)
-		return
+	var response AlertManagerUpdateResponseMulti
+	response = AlertManagerUpdateResponseMulti{}
+	for i, alert := range newAlert.Alert {
+		if i < len(compareResult) { // Safety check
+			response = append(response, struct {
+				Success  int
+				Severity string
+			}{
+				Success:  compareResult[i],
+				Severity: alert.Severity,
+			})
+		}
 	}
 
-	err = notifyFrontendWithUpdateConfirmation(fmt.Sprintf("Issue created with ID: %s", id))
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Failed to notify frontend: %v", err), http.StatusInternalServerError)
+	templateData := struct {
+		IssueURL                        string
+		PullRequestURL                  string
+		AlertManagerUpdateResponseMulti AlertManagerUpdateResponseMulti
+	}{
+		IssueURL:                        "feature coming soon",
+		PullRequestURL:                  "feature coming soon",
+		AlertManagerUpdateResponseMulti: response,
+	}
+
+	if err := t.Execute(w, templateData); err != nil {
+		http.Error(w, fmt.Sprintf("Failed to render template: %v", err), http.StatusInternalServerError)
 		return
 	}
-}
-
-func updateS3FileWithDetails(bucket string, details Details, client *s3.Client) error {
-	// Implement the logic to update the S3 file with the details
-	// This function should interact with the S3 client to update the file in the specified bucket
-	return nil
-}
-
-func createIssueWithUpdateDetails(issueDetails string) (string, error) {
-	// Implement the logic to create an issue with the details of the update
-	// This function should interact with your issue tracking system (e.g., GitHub, Jira)
-	return "", nil
-}
-
-func notifyFrontendWithUpdateConfirmation(issueDetails string) error {
-	// Implement the logic to notify the frontend application with the confirmation of the update
-	// This could involve sending a message through a WebSocket, HTTP response, or other means
-	return nil
 }
